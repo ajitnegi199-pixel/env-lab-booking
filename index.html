@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnviroLab | Equipment Booking Portal</title>
+
+  <style>
+    :root {
+      --primary: #0b6e4f;
+      --primary-dark: #07523b;
+      --primary-light: #dff5eb;
+      --secondary: #0f766e;
+      --bg: #f4f8f7;
+      --surface: #ffffff;
+      --text: #17322b;
+      --muted: #687b75;
+      --border: #d9e6e1;
+      --danger: #b42318;
+      --danger-bg: #fee4e2;
+      --warning: #b54708;
+      --warning-bg: #fef0c7;
+      --success: #067647;
+      --success-bg: #d1fadf;
+      --info: #175cd3;
+      --info-bg: #dbeafe;
+      --shadow: 0 12px 30px rgba(20, 65, 52, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #064e3b, #073b32);
+      color: white;
+      padding: 26px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 21px;
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      line-height: 1.1;
+    }
+
+    .brand p {
+      font-size: 12px;
+      opacity: 0.74;
+      margin-top: 3px;
+    }
+
+    .role-box {
+      margin: 0 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .role-box label {
+      font-size: 11px;
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      opacity: 0.75;
+    }
+
+    .role-box select {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      padding: 9px;
+      color: #073b32;
+      font-weight: 700;
+      background: white;
+    }
+
+    .nav-links {
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav-item {
+      width: 100%;
+      text-align: left;
+      border-radius: 9px;
+      color: rgba(255,255,255,0.78);
+      background: transparent;
+      padding: 12px 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: #fff;
+      background: rgba(255,255,255,0.14);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 12px 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .main-content {
+      padding: 28px;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      gap: 18px;
+    }
+
+    .topbar h2 {
+      font-size: 27px;
+      letter-spacing: -0.7px;
+    }
+
+    .topbar p {
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 3px 9px rgba(0,0,0,0.03);
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      background: var(--primary);
+    }
+
+    .user-chip strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .user-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0b6e4f, #0f766e);
+      padding: 27px;
+      color: white;
+      border-radius: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h3 {
+      font-size: 24px;
+      margin-bottom: 7px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: rgba(255,255,255,0.86);
+      font-size: 14px;
+    }
+
+    .hero-stat {
+      min-width: 145px;
+      padding: 15px;
+      text-align: center;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.14);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .hero-stat span {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 14px;
+    }
+
+    .section-heading h3 {
+      font-size: 19px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input,
+    .filter-select {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      padding: 10px 12px;
+      outline-color: var(--primary);
+    }
+
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 18px;
+    }
+
+    .equipment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.025);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .equipment-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .equipment-visual {
+      min-height: 106px;
+      padding: 18px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: white;
+      background: linear-gradient(135deg, #0b6e4f, #0f766e);
+    }
+
+    .equipment-visual .icon {
+      font-size: 46px;
+    }
+
+    .equipment-code {
+      font-size: 11px;
+      background: rgba(255,255,255,0.17);
+      border-radius: 20px;
+      padding: 5px 8px;
+    }
+
+    .equipment-body {
+      padding: 17px;
+    }
+
+    .equipment-body h4 {
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .equipment-body p {
+      font-size: 13px;
+      min-height: 40px;
+      color: var(--muted);
+    }
+
+    .card-meta {
+      margin: 13px 0;
+      padding-top: 12px;
+      border-top: 1px solid #edf2f0;
+      font-size: 12px;
+      color: var(--muted);
+      display: grid;
+      gap: 5px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 20px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .available,
+    .approved,
+    .completed {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .in-use,
+    .pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .maintenance,
+    .cancelled,
+    .rejected {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .btn {
+      border-radius: 9px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 750;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-disabled {
+      background: #e4ece9;
+      color: #82928c;
+      cursor: not-allowed;
+    }
+
+    .card-action {
+      width: 100%;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      padding: 19px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-card strong {
+      display: block;
+      margin: 6px 0 2px;
+      font-size: 25px;
+    }
+
+    .stat-card small {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      background: var(--surface);
+      margin-bottom: 18px;
+    }
+
+    .panel h3 {
+      font-size: 17px;
+      margin-bottom: 15px;
+    }
+
+    .booking-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .booking-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px;
+      border: 1px solid #e7eeeb;
+      border-radius: 10px;
+      background: #fcfefd;
+    }
+
+    .booking-row h4 {
+      font-size: 14px;
+    }
+
+    .booking-row p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .booking-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      border-radius: 7px;
+      padding: 7px 9px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .mini-btn.reject {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(4, 31, 23, 0.58);
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(900px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h3 {
+      font-size: 19px;
+    }
+
+    .close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--muted);
+      background: #eef5f2;
+      font-size: 19px;
+    }
+
+    .modal-content {
+      padding: 22px;
+    }
+
+    .selected-equipment {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      border-radius: 11px;
+      background: #eef9f4;
+      margin-bottom: 18px;
+    }
+
+    .selected-equipment .small-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      background: var(--primary);
+    }
+
+    .selected-equipment p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #35554a;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      outline-color: var(--primary);
+    }
+
+    .form-group textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .slot-note {
+      padding: 11px;
+      border-radius: 8px;
+      color: #345a4d;
+      background: #f1f8f5;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+
+    .slot {
+      padding: 11px 9px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: #214b3d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .slot:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .slot.selected {
+      color: white;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .slot:disabled {
+      color: #9d4b45;
+      border-color: #f5c4c0;
+      text-decoration: line-through;
+      background: #fff1f0;
+      cursor: not-allowed;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 50;
+      right: 22px;
+      bottom: 22px;
+      max-width: 360px;
+      padding: 14px 16px;
+      color: #fff;
+      background: #07523b;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.24);
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .empty-state {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        padding: 14px;
+      }
+
+      .nav-links {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .main-content {
+        padding: 18px;
+      }
+
+      .topbar,
+      .hero {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .filter-row,
+      .search-input,
+      .filter-select {
+        width: 100%;
+      }
+
+      .booking-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .booking-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🌿</div>
+        <div>
+          <h1>EnviroLab</h1>
+          <p>Equipment Booking Portal</p>
+        </div>
+      </div>
+
+      <div class="role-box">
+        <label for="roleSelect">Demo Login Role</label>
+        <select id="roleSelect">
+          <option value="student">Student / Researcher</option>
+          <option value="admin">Admin / Lab Manager</option>
+        </select>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-item active" data-view="equipmentView">🧪 Equipment</button>
+        <button class="nav-item" data-view="studentView">📅 My Bookings</button>
+        <button class="nav-item admin-only" data-view="adminView">📊 Admin Dashboard</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        Environmental Engineering Laboratory<br />
+        Delhi • Lab Hours: 9 AM – 5 PM
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">Equipment Catalogue</h2>
+          <p id="pageSubtitle">Check availability and reserve lab instruments.</p>
+        </div>
+
+        <div class="user-chip">
+          <div class="avatar" id="avatarText">AN</div>
+          <div>
+            <strong id="userName">Ajit Negi</strong>
+            <span id="userRoleLabel">Student / Researcher</span>
+          </div>
+        </div>
+      </header>
+
+      <section id="equipmentView" class="view active">
+        <div class="hero">
+          <div>
+            <h3>Book laboratory equipment with confidence</h3>
+            <p>
+              Check live slot availability, submit your experiment request,
+              and receive an instant booking confirmation.
+            </p>
+          </div>
+
+          <div class="hero-stat">
+            <strong id="availableCount">3</strong>
+            <span>Available Instruments</span>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <h3>Available Lab Equipment</h3>
+
+          <div class="filter-row">
+            <input
+              type="search"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search equipment..."
+            />
+
+            <select id="statusFilter" class="filter-select">
+              <option value="ALL">All Status</option>
+              <option value="AVAILABLE">Available</option>
+              <option value="IN_USE">In Use</option>
+              <option value="MAINTENANCE">Maintenance</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="equipmentGrid" class="equipment-grid"></div>
+      </section>
+
+      <section id="studentView" class="view">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Upcoming Bookings</span>
+            <strong id="upcomingCount">0</strong>
+            <small>Active reservations</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Pending Approval</span>
+            <strong id="pendingCount">0</strong>
+            <small>Awaiting Lab Manager</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Completed Sessions</span>
+            <strong>8</strong>
+            <small>+2 this month</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Hours Used</span>
+            <strong>14.5</strong>
+            <small>Current semester</small>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>My Upcoming Bookings</h3>
+          <div id="studentBookingList" class="booking-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Booking Guidelines</h3>
+          <p style="font-size: 13px; color: #687b75;">
+            Please arrive 10 minutes before your confirmed booking. Bring your
+            lab ID card, follow all safety SOPs, and cancel unused bookings in
+            advance so that other researchers can use the instrument.
+          </p>
+        </div>
+      </section>
+
+      <section id="adminView" class="view">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Today's Bookings</span>
+            <strong id="todayBookingsCount">12</strong>
+            <small>Across all equipment</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Pending Requests</span>
+            <strong id="adminPendingCount">2</strong>
+            <small>Need your action</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Total Active Users</span>
+            <strong>146</strong>
+            <small>Students and researchers</small>
+          </div>
+
+          <div class="stat-card">
+            <span>Lab Utilization</span>
+            <strong>74%</strong>
+            <small>+8% vs last week</small>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Pending Booking Approvals</h3>
+          <div id="adminBookingList" class="booking-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Today's Lab Schedule</h3>
+          <div class="booking-list">
+            <div class="booking-row">
+              <div>
+                <h4>UV-Visible Spectrophotometer</h4>
+                <p>09:00 AM – 11:00 AM • Riya Sharma • Water sample analysis</p>
+              </div>
+              <span class="badge approved">Approved</span>
+            </div>
+
+            <div class="booking-row">
+              <div>
+                <h4>BOD Incubator</h4>
+                <p>11:00 AM – 01:00 PM • Arjun Mehta • BOD incubation study</p>
+              </div>
+              <span class="badge approved">Approved</span>
+            </div>
+
+            <div class="booking-row">
+              <div>
+                <h4>Digital pH Meter</h4>
+                <p>02:00 PM – 03:00 PM • Neha Verma • Effluent pH analysis</p>
+              </div>
+              <span class="badge pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="bookingModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Reserve Equipment Slot</h3>
+        <button class="close-btn" id="closeModalBtn" aria-label="Close booking dialog">×</button>
+      </div>
+
+      <div class="modal-content">
+        <div class="selected-equipment">
+          <div class="small-icon" id="modalEquipmentIcon">🔬</div>
+          <div>
+            <strong id="modalEquipmentName">Equipment Name</strong>
+            <p id="modalEquipmentInfo">Environmental Lab • 60 minute slots</p>
+          </div>
+        </div>
+
+        <div class="booking-layout">
+          <div>
+            <div class="form-group">
+              <label for="bookingDate">Select Date</label>
+              <input type="date" id="bookingDate" />
+            </div>
+
+            <div class="form-group">
+              <label for="projectTitle">Project / Experiment Title</label>
+              <input
+                type="text"
+                id="projectTitle"
+                placeholder="e.g., Groundwater nitrate analysis"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="bookingPurpose">Purpose of Booking</label>
+              <textarea
+                id="bookingPurpose"
+                placeholder="Briefly mention experiment objective, number of samples, and requirements..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div class="slot-note">
+              Green/white slots are available. Red crossed slots are already booked.
+              Select one available slot to continue.
+            </div>
+
+            <div id="slotGrid" class="slot-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelModalBtn">Cancel</button>
+        <button class="btn btn-primary" id="confirmBookingBtn">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const equipmentData = [
+      {
+        id: 1,
+        code: "ENV-SP-001",
+        name: "UV-Visible Spectrophotometer",
+        category: "Water Quality Analysis",
+        location: "Bench A",
+        status: "AVAILABLE",
+        slotDuration: 60,
+        icon: "🔬",
+        description: "Measure absorbance and estimate concentration of water samples.",
+        bookedSlots: ["11:00 AM - 12:00 PM", "02:00 PM - 03:00 PM"]
+      },
+      {
+        id: 2,
+        code: "ENV-BOD-001",
+        name: "BOD Incubator",
+        category: "Biological Analysis",
+        location: "Incubation Room",
+        status: "IN_USE",
+        slotDuration: 120,
+        icon: "🧫",
+        description: "Controlled incubation chamber for BOD testing and analysis.",
+        bookedSlots: ["09:00 AM - 10:00 AM", "10:00 AM - 11:00 AM"]
+      },
+      {
+        id: 3,
+        code: "ENV-PH-001",
+        name: "Digital pH Meter",
+        category: "Water Quality Analysis",
+        location: "Bench C",
+        status: "AVAILABLE",
+        slotDuration: 30,
+        icon: "⚗️",
+        description: "Portable precision device for pH measurement of samples.",
+        bookedSlots: ["01:00 PM - 02:00 PM"]
+      },
+      {
+        id: 4,
+        code: "ENV-JT-001",
+        name: "Jar Test Apparatus",
+        category: "Water Treatment",
+        location: "Bench D",
+        status: "MAINTENANCE",
+        slotDuration: 60,
+        icon: "🧪",
+        description: "Coagulation and flocculation analysis for treatment studies.",
+        bookedSlots: []
+      },
+      {
+        id: 5,
+        code: "ENV-DO-001",
+        name: "Dissolved Oxygen Meter",
+        category: "Water Quality Analysis",
+        location: "Bench B",
+        status: "AVAILABLE",
+        slotDuration: 60,
+        icon: "💧",
+        description: "Measures dissolved oxygen level in wastewater and water samples.",
+        bookedSlots: ["03:00 PM - 04:00 PM"]
+      }
+    ];
+
+    const timeSlots = [
+      "09:00 AM - 10:00 AM",
+      "10:00 AM - 11:00 AM",
+      "11:00 AM - 12:00 PM",
+      "12:00 PM - 01:00 PM",
+      "01:00 PM - 02:00 PM",
+      "02:00 PM - 03:00 PM",
+      "03:00 PM - 04:00 PM",
+      "04:00 PM - 05:00 PM"
+    ];
+
+    let currentRole = "student";
+    let selectedEquipment = null;
+    let selectedSlot = null;
+
+    const studentBookings = [
+      {
+        id: "BK-ENV-1024",
+        equipment: "UV-Visible Spectrophotometer",
+        date: "02 Sep 2026",
+        time: "09:00 AM - 10:00 AM",
+        status: "APPROVED",
+        purpose: "Nitrate concentration analysis"
+      }
+    ];
+
+    const pendingBookings = [
+      {
+        id: "BK-ENV-1031",
+        student: "Riya Sharma",
+        equipment: "Digital pH Meter",
+        date: "02 Sep 2026",
+        time: "02:00 PM - 03:00 PM",
+        purpose: "Industrial effluent pH analysis",
+        status: "PENDING"
+      },
+      {
+        id: "BK-ENV-1032",
+        student: "Arjun Mehta",
+        equipment: "BOD Incubator",
+        date: "03 Sep 2026",
+        time: "10:00 AM - 12:00 PM",
+        purpose: "BOD sample incubation",
+        status: "PENDING"
+      }
+    ];
+
+    const statusClass = {
+      AVAILABLE: "available",
+      IN_USE: "in-use",
+      MAINTENANCE: "maintenance",
+      APPROVED: "approved",
+      PENDING: "pending",
+      CANCELLED: "cancelled",
+      REJECTED: "rejected",
+      COMPLETED: "completed"
+    };
+
+    const statusText = {
+      AVAILABLE: "Available",
+      IN_USE: "In Use",
+      MAINTENANCE: "Maintenance",
+      APPROVED: "Approved",
+      PENDING: "Pending",
+      CANCELLED: "Cancelled",
+      REJECTED: "Rejected",
+      COMPLETED: "Completed"
+    };
+
+    function renderEquipment() {
+      const grid = document.getElementById("equipmentGrid");
+      const searchValue = document.getElementById("searchInput").value.toLowerCase();
+      const selectedStatus = document.getElementById("statusFilter").value;
+
+      const filteredEquipment = equipmentData.filter((item) => {
+        const matchesSearch =
+          item.name.toLowerCase().includes(searchValue) ||
+          item.category.toLowerCase().includes(searchValue) ||
+          item.code.toLowerCase().includes(searchValue);
+
+        const matchesStatus =
+          selectedStatus === "ALL" || item.status === selectedStatus;
+
+        return matchesSearch && matchesStatus;
+      });
+
+      document.getElementById("availableCount").textContent =
+        equipmentData.filter((item) => item.status === "AVAILABLE").length;
+
+      if (!filteredEquipment.length) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            No equipment matched your search or filter.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filteredEquipment.map((item) => {
+        const canBook = item.status === "AVAILABLE";
+
+        return `
+          <article class="equipment-card">
+            <div class="equipment-visual">
+              <span class="icon">${item.icon}</span>
+              <span class="equipment-code">${item.code}</span>
+            </div>
+
+            <div class="equipment-body">
+              <span class="badge ${statusClass[item.status]}">
+                ${statusText[item.status]}
+              </span>
+
+              <h4 style="margin-top: 11px;">${item.name}</h4>
+              <p>${item.description}</p>
+
+              <div class="card-meta">
+                <span>📍 ${item.location}</span>
+                <span>⏱ ${item.slotDuration} minute slot duration</span>
+                <span>🏷 ${item.category}</span>
+              </div>
+
+              <button
+                class="btn card-action ${canBook ? "btn-primary" : "btn-disabled"}"
+                ${canBook ? `onclick="openBookingModal(${item.id})"` : "disabled"}
+              >
+                ${canBook ? "View Slots & Book" : item.status === "MAINTENANCE" ? "Under Maintenance" : "Currently In Use"}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function openBookingModal(equipmentId) {
+      selectedEquipment = equipmentData.find((item) => item.id === equipmentId);
+      selectedSlot = null;
+
+      document.getElementById("modalEquipmentName").textContent = selectedEquipment.name;
+      document.getElementById("modalEquipmentIcon").textContent = selectedEquipment.icon;
+      document.getElementById("modalEquipmentInfo").textContent =
+        `${selectedEquipment.location} • ${selectedEquipment.slotDuration} minute slot`;
+
+      const dateInput = document.getElementById("bookingDate");
+      const today = new Date();
+      const localToday = new Date(
+        today.getTime() - today.getTimezoneOffset() * 60000
+      ).toISOString().split("T")[0];
+
+      dateInput.min = localToday;
+      dateInput.value = localToday;
+
+      document.getElementById("projectTitle").value = "";
+      document.getElementById("bookingPurpose").value = "";
+
+      renderSlots();
+      document.getElementById("bookingModalBackdrop").classList.add("show");
+    }
+
+    function renderSlots() {
+      const slotGrid = document.getElementById("slotGrid");
+
+      slotGrid.innerHTML = timeSlots.map((slot) => {
+        const isBooked = selectedEquipment.bookedSlots.includes(slot);
+
+        return `
+          <button
+            class="slot ${selectedSlot === slot ? "selected" : ""}"
+            ${isBooked ? "disabled" : ""}
+            onclick="${isBooked ? "" : `selectSlot('${slot}')`}"
+          >
+            ${isBooked ? "Booked • " : ""}${slot}
+          </button>
+        `;
+      }).join("");
+    }
+
+    function selectSlot(slot) {
+      selectedSlot = slot;
+      renderSlots();
+    }
+
+    function closeBookingModal() {
+      document.getElementById("bookingModalBackdrop").classList.remove("show");
+      selectedEquipment = null;
+      selectedSlot = null;
+    }
+
+    function confirmBooking() {
+      const date = document.getElementById("bookingDate").value;
+      const projectTitle = document.getElementById("projectTitle").value.trim();
+      const purpose = document.getElementById("bookingPurpose").value.trim();
+
+      if (!date || !selectedSlot) {
+        showToast("Please select a date and one available time slot.");
+        return;
+      }
+
+      if (!projectTitle || !purpose) {
+        showToast("Please provide project title and booking purpose.");
+        return;
+      }
+
+      const bookingDate = new Date(`${date}T12:00:00`);
+      const formattedDate = bookingDate.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+      const bookingReference = `BK-ENV-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const newBooking = {
+        id: bookingReference,
+        equipment: selectedEquipment.name,
+        date: formattedDate,
+        time: selectedSlot,
+        status: "PENDING",
+        purpose: purpose
+      };
+
+      studentBookings.unshift(newBooking);
+      selectedEquipment.bookedSlots.push(selectedSlot);
+
+      renderSlots();
+      renderEquipment();
+      renderStudentBookings();
+
+      closeBookingModal();
+
+      showToast(
+        `Booking request ${bookingReference} created successfully. Status: Pending approval.`
+      );
+    }
+
+    function renderStudentBookings() {
+      const list = document.getElementById("studentBookingList");
+
+      const upcoming = studentBookings.filter(
+        (booking) => booking.status === "APPROVED" || booking.status === "PENDING"
+      );
+
+      document.getElementById("upcomingCount").textContent = upcoming.length;
+      document.getElementById("pendingCount").textContent =
+        studentBookings.filter((booking) => booking.status === "PENDING").length;
+
+      if (!studentBookings.length) {
+        list.innerHTML = `<div class="empty-state">You have no bookings yet.</div>`;
+        return;
+      }
+
+      list.innerHTML = studentBookings.map((booking) => `
+        <div class="booking-row">
+          <div>
+            <h4>${booking.equipment}</h4>
+            <p>${booking.id} • ${booking.date} • ${booking.time}</p>
+            <p>Purpose: ${booking.purpose}</p>
+          </div>
+
+          <div class="booking-actions">
+            <span class="badge ${statusClass[booking.status]}">
+              ${statusText[booking.status]}
+            </span>
+
+            ${
+              booking.status === "PENDING" || booking.status === "APPROVED"
+                ? `<button class="mini-btn reject" onclick="cancelStudentBooking('${booking.id}')">Cancel</button>`
+                : ""
+            }
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function cancelStudentBooking(bookingId) {
+      const booking = studentBookings.find((item) => item.id === bookingId);
+
+      if (!booking) return;
+
+      booking.status = "CANCELLED";
+      renderStudentBookings();
+      showToast(`Booking ${bookingId} has been cancelled.`);
+    }
+
+    function renderAdminBookings() {
+      const list = document.getElementById("adminBookingList");
+      const pending = pendingBookings.filter((booking) => booking.status === "PENDING");
+
+      document.getElementById("adminPendingCount").textContent = pending.length;
+
+      if (!pending.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            All booking requests have been reviewed.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = pending.map((booking) => `
+        <div class="booking-row">
+          <div>
+            <h4>${booking.equipment}</h4>
+            <p>${booking.student} • ${booking.id} • ${booking.date} • ${booking.time}</p>
+            <p>Purpose: ${booking.purpose}</p>
+          </div>
+
+          <div class="booking-actions">
+            <span class="badge pending">Pending</span>
+            <button class="mini-btn" onclick="updateAdminBooking('${booking.id}', 'APPROVED')">
+              Approve
+            </button>
+            <button class="mini-btn reject" onclick="updateAdminBooking('${booking.id}', 'REJECTED')">
+              Reject
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function updateAdminBooking(bookingId, newStatus) {
+      const booking = pendingBookings.find((item) => item.id === bookingId);
+
+      if (!booking) return;
+
+      booking.status = newStatus;
+      renderAdminBookings();
+
+      const actionText = newStatus === "APPROVED" ? "approved" : "rejected";
+      showToast(`Booking ${bookingId} has been ${actionText}.`);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3400);
+    }
+
+    function switchView(viewId) {
+      const roleIsAdmin = currentRole === "admin";
+
+      if (viewId === "adminView" && !roleIsAdmin) {
+        showToast("Admin Dashboard is accessible only to Lab Managers.");
+        return;
+      }
+
+      document.querySelectorAll(".view").forEach((view) => {
+        view.classList.remove("active");
+      });
+
+      document.getElementById(viewId).classList.add("active");
+
+      document.querySelectorAll(".nav-item").forEach((button) => {
+        button.classList.toggle("active", button.dataset.view === viewId);
+      });
+
+      const pageInfo = {
+        equipmentView: {
+          title: "Equipment Catalogue",
+          subtitle: "Check availability and reserve lab instruments."
+        },
+        studentView: {
+          title: "My Bookings",
+          subtitle: "View upcoming reservations and booking history."
+        },
+        adminView: {
+          title: "Lab Manager Dashboard",
+          subtitle: "Monitor equipment usage and approve booking requests."
+        }
+      };
+
+      document.getElementById("pageTitle").textContent = pageInfo[viewId].title;
+      document.getElementById("pageSubtitle").textContent = pageInfo[viewId].subtitle;
+    }
+
+    document.getElementById("roleSelect").addEventListener("change", (event) => {
+      currentRole = event.target.value;
+
+      const isAdmin = currentRole === "admin";
+
+      document.getElementById("userName").textContent = isAdmin
+        ? "Dr. Lab Manager"
+        : "Ajit Negi";
+
+      document.getElementById("avatarText").textContent = isAdmin ? "LM" : "AN";
+
+      document.getElementById("userRoleLabel").textContent = isAdmin
+        ? "Admin / Lab Manager"
+        : "Student / Researcher";
+
+      document.querySelectorAll(".admin-only").forEach((item) => {
+        item.style.display = isAdmin ? "block" : "none";
+      });
+
+      if (!isAdmin && document.getElementById("adminView").classList.contains("active")) {
+        switchView("equipmentView");
+      }
+
+      showToast(`Demo role switched to ${isAdmin ? "Admin / Lab Manager" : "Student / Researcher"}.`);
+    });
+
+    document.querySelectorAll(".nav-item").forEach((button) => {
+      button.addEventListener("click", () => switchView(button.dataset.view));
+    });
+
+    document.getElementById("searchInput").addEventListener("input", renderEquipment);
+    document.getElementById("statusFilter").addEventListener("change", renderEquipment);
+
+    document.getElementById("closeModalBtn").addEventListener("click", closeBookingModal);
+    document.getElementById("cancelModalBtn").addEventListener("click", closeBookingModal);
+    document.getElementById("confirmBookingBtn").addEventListener("click", confirmBooking);
+
+    document.getElementById("bookingModalBackdrop").addEventListener("click", (event) => {
+      if (event.target.id === "bookingModalBackdrop") {
+        closeBookingModal();
+      }
+    });
+
+    renderEquipment();
+    renderStudentBookings();
+    renderAdminBookings();
+  </script>
+</body>
+</html>
